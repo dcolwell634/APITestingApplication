@@ -32,7 +32,7 @@ namespace BasicWebAPI1.Controllers
         }
 
         [HttpGet]
-        public Product GetProduct(int id)
+        public Product GetProductById(int id)
         {
             Product pro = _products.Find(p => p.Id == id);
 
