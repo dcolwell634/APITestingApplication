@@ -145,5 +145,32 @@ namespace BasicWebAPI1.Test
             
         }
 
+        /// <summary>
+        /// Confirm that adding multiple products increases the total Product count
+        /// by the number of new products we created
+        /// Created by Sam Biondolillo
+        /// </summary>
+        [TestMethod]
+        public void CreatingMultipleProductsShouldIncreaseProductCount()
+        {
+            // Arrange
+            var products = controller.GetProducts() as IList<Product>;
+            var initialCount = products.Count;
+            var newProduct = new Product { Id = 99, Name = "Test Car", Description = "This is just a test" };
+            var newProduct2 = new Product { Id = 999, Name = "Test Car 2", Description = "This is the second test" };
+            var newProduct3 = new Product { Id = 9999, Name = "Test Car 3", Description = "This is the third test" };
+
+            // Act
+            controller.PostProduct(newProduct);
+            controller.PostProduct(newProduct2);
+            controller.PostProduct(newProduct3);
+            products = controller.GetProducts() as IList<Product>;
+            var finalCount = products.Count;
+
+            // Assert
+            Assert.AreEqual(finalCount, initialCount + 3);
+
+        }
+
     }
 }
