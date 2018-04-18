@@ -21,9 +21,9 @@ namespace BasicWebAPI1.Test
             controller = new ProductsController();            
         }
 
-        /// <summary
+        /// <summary>
         /// Gets list of products
-        /// </summary
+        /// </summary>
         [TestMethod]
         [TestCategory ("Unit")]
         public void GetProductReturnsProducts()
@@ -34,9 +34,9 @@ namespace BasicWebAPI1.Test
             Assert.IsTrue(productList.Count == 5, "Should have 5 products returned.");
         }
 
-        /// <summary
+        /// <summary>
         /// Gets products by id passed and confirms correct product was returned
-        /// </summary
+        /// </summary>
         [TestMethod]
         [TestCategory("Unit")]
         public void GetProductByIdReturnsCorrectProduct()
@@ -49,9 +49,9 @@ namespace BasicWebAPI1.Test
             Assert.IsTrue(hondaCivic.Description == "Luxury Model 2013", "Description should be \"Luxury Model 2013\"");
         }
 
-        /// <summary
+        /// <summary>
         /// Searches for product based on description and verifies correct product was returned
-        /// </summary
+        /// </summary>
         [TestMethod]
         [TestCategory("Unit")]
         public void GetProductBySearchReturnsCorrectProduct()
@@ -75,9 +75,9 @@ namespace BasicWebAPI1.Test
             }
         }
 
-        /// <summary
+        /// <summary>
         /// Adds product to the list
-        /// </summary
+        /// </summary>
         [TestMethod]
         [TestCategory("Unit")]
         public void PostProductAddsProductToProducts()
@@ -88,9 +88,9 @@ namespace BasicWebAPI1.Test
             Assert.IsTrue(productList.Count == 6, "We should now have 6 products in our product list");
         }
 
-        /// <summary
+        /// <summary>
         /// Update product and verify the updated description and name is correct
-        /// </summary
+        /// </summary>
         [TestMethod]
         [TestCategory("Unit")]
         public void PutProductUpdatesProduct()
@@ -108,9 +108,9 @@ namespace BasicWebAPI1.Test
 
         }
 
-        /// <summary
+        /// <summary>
         /// Delete the previously added product
-        /// </summary
+        /// </summary>
         [TestMethod]
         [TestCategory("Unit")]
         public void DeleteProductDeletsProduct()
@@ -120,6 +120,112 @@ namespace BasicWebAPI1.Test
             List<Product> productList = (List<Product>)controller.GetProducts();
 
             Assert.IsTrue(productList.Count == 5, "Should have 5 products returned.");
+        }
+
+        /// <summary>
+        /// Confirm that a new product is added by checking the total Product count
+        /// before and after creating a new Product
+        /// Created by Sam Biondolillo
+        /// </summary>
+        [TestMethod]
+        public void CreatingProductShouldIncreaseProductCount()
+        {
+            // Arrange
+            var products = controller.GetProducts() as IList<Product>;
+            var initialCount = products.Count;
+            var newProduct = new Product { Id = 99, Name = "Test Car", Description = "This is just a test" };
+
+            // Act
+            controller.PostProduct(newProduct);
+            products = controller.GetProducts() as IList<Product>;
+            var finalCount = products.Count;
+
+            // Assert
+            Assert.AreEqual(finalCount, initialCount + 1);
+            
+        }
+
+        /// <summary>
+        /// Confirm that adding multiple products increases the total Product count
+        /// by the number of new products we created
+        /// Created by Sam Biondolillo
+        /// </summary>
+        [TestMethod]
+        public void CreatingMultipleProductsShouldIncreaseProductCount()
+        {
+            // Arrange
+            var products = controller.GetProducts() as IList<Product>;
+            var initialCount = products.Count;
+            var newProduct = new Product { Id = 99, Name = "Test Car", Description = "This is just a test" };
+            var newProduct2 = new Product { Id = 999, Name = "Test Car 2", Description = "This is the second test" };
+            var newProduct3 = new Product { Id = 9999, Name = "Test Car 3", Description = "This is the third test" };
+
+            // Act
+            controller.PostProduct(newProduct);
+            controller.PostProduct(newProduct2);
+            controller.PostProduct(newProduct3);
+            products = controller.GetProducts() as IList<Product>;
+            var finalCount = products.Count;
+
+            // Assert
+            Assert.AreEqual(finalCount, initialCount + 3);
+
+        }
+
+        /// <summary>
+        /// Confirm that GetProductById returns correct product if new product was just added
+        /// Created by Sam Biondolillo
+        /// </summary>
+        [TestMethod]
+        public void GetProductByIdShouldReturnNewlyCreatedProduct()
+        {
+            // Arrange
+            var newProduct = new Product { Id = 99, Name = "Test Car", Description = "This is just a test" };
+            
+            // Act
+            controller.PostProduct(newProduct);
+            var finalProduct = controller.GetProductById(newProduct.Id);
+
+            // Assert
+            Assert.IsTrue(finalProduct.Name.Equals(newProduct.Name));
+            Assert.IsTrue(finalProduct.Description.Equals(newProduct.Description));
+
+        }
+
+        /// <summary>
+        /// Confirm that GetProductById fails when id is not found
+        /// Created by Sam Biondolillo
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(System.Web.Http.HttpResponseException))]
+        public void GetProductByIdShouldFailWhenIdNotFound()
+        {
+            // Arrange
+            
+            // Act
+            var product = controller.GetProductById(10101);
+
+            // Assert
+            Assert.IsNull(product);
+
+        }
+
+        /// <summary>
+        /// Confirm that PostProduct returns bad request if product passed is null
+        /// Created by Sam Biondolillo
+        /// </summary>
+        [TestMethod]
+        public void PostProductShouldReturnBadRequestWhenPassedNullProduct()
+        {
+            // Arrange
+            var expected = System.Net.HttpStatusCode.BadRequest;
+
+            // Act
+            var actual = controller.PostProduct(null).StatusCode;
+
+            // Assert
+            Assert.AreEqual(expected, actual);
+
         }
 
     }
