@@ -210,5 +210,23 @@ namespace BasicWebAPI1.Test
 
         }
 
+        /// <summary>
+        /// Confirm that PostProduct returns bad request if product passed is null
+        /// Created by Sam Biondolillo
+        /// </summary>
+        [TestMethod]
+        public void PostProductShouldReturnBadRequestWhenPassedNullProduct()
+        {
+            // Arrange
+            var expected = System.Net.HttpStatusCode.BadRequest;
+
+            // Act
+            var actual = controller.PostProduct(null).StatusCode;
+
+            // Assert
+            Assert.AreEqual(expected, actual);
+
+        }
+
     }
 }
