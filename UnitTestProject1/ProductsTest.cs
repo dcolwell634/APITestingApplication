@@ -172,5 +172,25 @@ namespace BasicWebAPI1.Test
 
         }
 
+        /// <summary>
+        /// Confirm that GetProductById returns correct product if new product was just added
+        /// Created by Sam Biondolillo
+        /// </summary>
+        [TestMethod]
+        public void GetProductByIdShouldReturnNewlyCreatedProduct()
+        {
+            // Arrange
+            var newProduct = new Product { Id = 99, Name = "Test Car", Description = "This is just a test" };
+            
+            // Act
+            controller.PostProduct(newProduct);
+            var finalProduct = controller.GetProductById(newProduct.Id);
+
+            // Assert
+            Assert.IsTrue(finalProduct.Name.Equals(newProduct.Name));
+            Assert.IsTrue(finalProduct.Description.Equals(newProduct.Description));
+
+        }
+
     }
 }
