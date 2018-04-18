@@ -192,5 +192,23 @@ namespace BasicWebAPI1.Test
 
         }
 
+        /// <summary>
+        /// Confirm that GetProductById fails when id is not found
+        /// Created by Sam Biondolillo
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(System.Web.Http.HttpResponseException))]
+        public void GetProductByIdShouldFailWhenIdNotFound()
+        {
+            // Arrange
+            
+            // Act
+            var product = controller.GetProductById(10101);
+
+            // Assert
+            Assert.IsNull(product);
+
+        }
+
     }
 }
